@@ -8,8 +8,9 @@ function build() {
 }
 
 if [ -z $1 ]; then
-  build "joken"
-  build "twitter_python"
+  for f in *.latex; do
+    build $(basename $f .latex)
+  done
 elif [ $1 == "--clean" -o $1 == "-c" ]; then
   rm *.dvi
   rm *.log
