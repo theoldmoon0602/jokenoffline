@@ -11,7 +11,7 @@ if [ -z $1 ]; then
   build "joken"
   build "twitter_python"
 elif [ $1 == "--clean" -o $1 == "-c" ]; then
-  rm *.div
+  rm *.dvi
   rm *.log
   rm *.aux
   rm *.pdf
