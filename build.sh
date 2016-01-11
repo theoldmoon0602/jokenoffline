@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function build() {
-  platex "${1}.latex" &&  dvipdfmx "${1}.dvi"
+  platex --shell-escape "${1}.latex" &&  dvipdfmx "${1}.dvi"
   rm "${1}.dvi"
   rm *.log
   rm "${1}.aux"

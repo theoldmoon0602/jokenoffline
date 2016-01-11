@@ -1,5 +1,6 @@
 \documentclass{jsarticle}
 
+\usepackage[dvipdfmx]{graphicx}
 
 \begin{document}
 
@@ -52,6 +53,10 @@
 \part*{開発者登録}
 
 　ツイッターアプリを作るときは、まずアプリの登録を行わなければなりません。そんなに難しいこともないので、とっとこ済ませてしまいましょう。まずはお好きなブラウザ(Vimとか)でhttps://apps.twitter.comにアクセスしましょう。するとこんな感じ。
+
+  \begin{figure}
+    \includegraphics[clip,width=20cm,height=5cm]{imgs/img1.jpg}
+  \end{figure}
 
 　迷わずsign inします。するとこんな感じ。
 
