@@ -1,6 +1,7 @@
 \documentclass{jsarticle}
 
 \usepackage[dvipdfmx]{graphicx}
+\usepackage{here}
 
 \begin{document}
 
@@ -54,18 +55,44 @@
 
 　ツイッターアプリを作るときは、まずアプリの登録を行わなければなりません。そんなに難しいこともないので、とっとこ済ませてしまいましょう。まずはお好きなブラウザ(Vimとか)でhttps://apps.twitter.comにアクセスしましょう。するとこんな感じ。
 
-  \begin{figure}
-    \includegraphics[clip,width=20cm,height=5cm]{imgs/img1.jpg}
-  \end{figure}
+  \begin{center}
+    \begin{figure}[H]
+      \includegraphics[width=14cm]{imgs/img1.jpg}
+    \end{figure}
+  \end{center}
 
 　迷わずsign inします。するとこんな感じ。
 
+  \begin{center}
+    \begin{figure}[H]
+      \includegraphics[width=14cm]{imgs/img2.jpg}
+    \end{figure}
+  \end{center}
+
 　迷わずCreate New Appします。するとこんな感じ。
+
+  \begin{center}
+    \begin{figure}[H]
+      \includegraphics[width=14cm]{imgs/img3.jpg}
+    \end{figure}
+  \end{center}
 
 　いろいろ情報をいれます。名前は他のアプリとかぶらないものを適当に。説明は10文字以上を適当に。WebsiteはツイッターのURLとかでいいでしょう。それから、規約に同意してCreateします。
 
+  \begin{center}
+    \begin{figure}[H]
+      \includegraphics[width=14cm]{imgs/img4.jpg}
+    \end{figure}
+  \end{center}
+
 　そのあとで、Keys and Access Tokensというタブの下の方から、Generate HOGEしたらとりあえず準備終わりです。後でまた訪れますが、それが面倒だという方は、今のうちに、
 Application SettingsのConsumer KeyとConsumer Secret、それから、Your Access TokenのAccess TokenとAccess Token Secretをメモしておきましょう。
+
+  \begin{center}
+    \begin{figure}[H]
+      \includegraphics[width=14cm]{imgs/img5.jpg}
+    \end{figure}
+  \end{center}
 
 \part*{プログラムの書き始め}
 
