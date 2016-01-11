@@ -139,7 +139,7 @@ Application SettingsのConsumer KeyとConsumer Secret、それから、Your Acce
   twitter.update_status(status='Hello, twitter world!');
 \end{verbatim}
 
-　このupdate\_statusというメソッドがに、statusという名前の引数を文字列で渡してやれば、その文字列がツイートされます。細かいことは抜きにして、実際に動かしてみましょう。
+　このupdate\_statusというメソッドに、statusという名前の引数を文字列で渡してやれば、その文字列がツイートされます。細かいことは抜きにして、実際に動かしてみましょう。
 
 \section*{動かす}
 
