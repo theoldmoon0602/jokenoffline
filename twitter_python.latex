@@ -29,9 +29,10 @@
 
 \part*{前提}
 
-　Linux系のOS上で、すでにPython3系が動作する環境が整えられているとします。3分クッキングで言う「出来上がったものをこちらにご用意しました」的な。
+　Linux系のOS上で、すでにPython3系が動作する環境が整えられているとします。3分クッキングで言う「出来上がったものをこちらにご用意しました」的な。とはいえ、pythonとpipさえ十分にあれば、Windowsでも「コマンドプロンプト」を使って同じことができるはずです。
 
 　エディタが使えること、Pythonについての知識があること（Offlineの他の記事で紹介されているとおもいます）、Linuxのコンソールを扱えることくらいは前提です。
+
 
 \part*{必要なライブラリのインストール}
 
@@ -86,7 +87,7 @@
   \end{center}
 
 　そのあとで、Keys and Access Tokensというタブの下の方から、Generate HOGEしたらとりあえず準備終わりです。後でまた訪れますが、それが面倒だという方は、今のうちに、
-Application SettingsのConsumer KeyとConsumer Secret、それから、Your Access TokenのAccess TokenとAccess Token Secretをメモしておきましょう。
+Application SettingsのConsumer KeyとConsumer Secret、それから、Your Access TokenのAccess TokenとAccess Token Secretをメモしておきましょう。ちなみにこれらは自分以外には知られないようにすることが重要です。それぞれがマイナンバーのようなものなので。
 
   \begin{center}
     \begin{figure}[H]
@@ -97,5 +98,81 @@ Application SettingsのConsumer KeyとConsumer Secret、それから、Your Acce
 \part*{プログラムの書き始め}
 
 　とりあえず、プログラムを書き始めましょう。お好きなVimを立ち上げてください。……というのは少し厳しいので（というかVimの操作を説明するのが面倒なので）、好きなエディタを使ってください。名前はtweet.pyとでもしておきましょう。
+
+\section*{ライブラリを使うためのimport}
+
+　Pythonでライブラリを使うためには、pipで用意して、プログラム本体からはimportしてやる必要があります。したがって、一行目は
+\begin{verbatim}
+  import twython
+\end{verbatim}
+
+　となります。
+
+\section*{必要な情報の宣言}
+
+　先ほど見たConsumer Keyなどの四つの値を変数として定義します。これらは「文字列」として扱うので、ダブルクオーテーションで囲って"XXXX"とするか、シングルクオートで'XXXX'としてください。どちらでも違いはありません。こんな感じになります。
+
+\begin{verbatim}
+  import twython
+
+  consumer_key = 'XXXXXXXXXXXXXXX'
+  consumer_secret = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+  access_token = 'XXXXX-XXXXXXXXXXXXXXXXXXXXX'
+  access_token_secret = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+\end{verbatim}
+
+\section*{Twythonを使う}
+
+　導入したライブラリ、Twythonを使って、Twitterと通信する部分を作ります。
+
+\begin{verbatim}
+  twitter = twython.Twython(consumer_key, consumer_secret, access_token, access_token_secret)
+\end{verbatim}
+
+　この部分は、Twythonを使わなければかなり煩雑な処理になってしまいます。ところがその部分はライブラリにお任せしてしまえるので、、私達はtwitterというインスタンス（＝変数）を作って、これを使えば良いだけなのです。
+
+\section*{ツイートする}
+
+　もうツイートできます。たったこれだけ。
+
+\begin{verbatim}
+  twitter.update_status(status='Hello, twitter world!');
+\end{verbatim}
+
+　このupdate\_statusというメソッドがに、statusという名前の引数を文字列で渡してやれば、その文字列がツイートされます。細かいことは抜きにして、実際に動かしてみましょう。
+
+\section*{動かす}
+
+　動かすときは、プログラムを保存してエディタを終了しましょう。それから、コンソールで、次のようなコマンドを打ってください。うまく行かなければ、pythonをpython3に置き換えるなどしてみてください。
+
+\begin{verbatim}
+  python tweet.py
+\end{verbatim}
+
+　何も起きずに終了するはずです。拍子抜けですね。ところが、ツイッターにアクセスしてみると、確かにツイートが行われていることが確認できます。さらに、via（＝ツイッタークライアント）が見られるクライアントでは、自分のツイッタークライアントの名前のviaが見えるはずです。
+
+　これだけです。お疲れ様でした。
+
+\part*{振り返りとかまとめとか}
+
+　今回はPython3と、PythonでTwitterをするためのライブラリ、Twythonをつかって、簡単にツイートを行うプログラムを書きました。PythonもTwyhonも優秀なので記事が短くなってちょっと困っています。どれくらい短いかというと、プログラム全部でこのくらいです。
+
+\begin{verbatim}
+import twython
+
+consumer_key = 'XXXXXXXXXXXXXX'
+consumer_secret = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+access_token = 'XXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+access_token_secret = 'XXXXXXXXXXXXXXXXXXXXX'
+
+twitter = twython.Twython(consumer_key, consumer_secret, access_token, access_token_secret)
+
+twitter.update_status(status='Hello, twitter world!')
+
+\end{verbatim}
+
+　Twythonを使うと他にもいろいろできます。Twitterで提供される機能の殆どが、Twythonでも実現されています。もしもこのようなことに興味があれば、少しずつこのプログラムを改造してみましょう。例えば、Hello, twitter world!を変更すれば、その文字列がツイートされます。もうちょっとレベルを上げれば、入力した文字列をツイートできるようにもできるはずです。
+
+　ここ改造したいけれどもわからない！　という人や、もっと詳しい話がききたい！　という方がもしおられましたら、JOKENの門を叩いてください。
 
 \end{document}
