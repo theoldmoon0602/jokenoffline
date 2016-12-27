@@ -1,0 +1,243 @@
+\documentclass{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{listings}
+\usepackage{multicol}
+\title{無限に続く迷宮を作る（誇張）}
+
+\author{ふるつき}
+\date{\today}
+\begin{document}
+\lstset{
+  language=Python,
+  breaklines=true,
+  frame=single,
+}
+\maketitle
+\section{あいさつ}
+　情報工学科のふるつきといいます。去年は、サイバーセキュリティまわりの競技やスーパーコンピューティングコンテストで成績を残しました。一方で、高専プロコンでは大敗を喫して面目丸つぶれも経験しました（これは二回目のことで、一昨年は去年よりももっと酷い負け方をしてました）。
+ 
+ JOKENではそんな感じでサイバーセキュリティまわりのことをしたり、あとは、LT（LightningTalkのこと。5-10分程度の短い発表）を開催してみたりと、「わいわい盛り上がってうぇいうぇいしたい」的な欲求の実現に向けて日々精進したりしています。
+ 
+ その一方で、私は「現代視覚文化研究会」にも所属しており、こちらではなーんにもしていないのですが、毎年、高専祭のために一本ゲームを作る活動だけはなんとか続けています。今年は本当にぎりぎりのスケジュールで、当日もまだ新しいバグを見つけたり、未実装の機能をだましだましで動かしたりしていました。ふらふらコスモノートというゲームで、\url{http://nnct-mvccc.sakura.ne.jp/products/584291b663643/index.html}で公開していますので一度遊んでみてください。
+ 
+ 今回はこのふらふらコスモノートを作ったときのアルゴリズムの話を書きます。新入生のうちのいくらかがちょっと期待しているゲームの話で、それなりに頭をつかうので、悪くない題材だと思います。げんしけんのマーケティングが混じってることを除けば。
+ 
+\section{迷宮を作る}
+\subsection{つくりたいもの}
+　ふらふらコスモノートは、宇宙飛行士が、宇宙空間をふらふらと彷徨うゲームなのですが、宇宙が無限に広がっているわけではなくスペースデブリの隙間を縫って先に進む必要があります（そういう設定です）。この、スペースデブリの迷路を、無限の長さにしたい、というのが当初の要望でした。
+ 
+\begin{figure}
+ \centering
+   \includegraphics[width=60mm]{figures/field.png}
+ \caption{迷宮（迷宮っぽくないとか言わない）}
+ \label{fig:model}
+\end{figure}
+
+ 
+ \ref{model}みたいな迷宮が無限に続くみたいなのをイメージしてます。
+
+\subsection{無限の迷宮がつくれるか}
+　無限の迷宮ってどうやって作るんでしょうね？　作ったとして、有限のメモリのどこに保存しておくんでしょうね？
+ 
+ こういう疑問が出てくるのは当たり前ですね。というか、前提条件ですね。「無限の迷路を作りたいなぁ」と思ったときに、実際に無限の空間を生成しようとするのは愚かなことです。それは無限の満たすべき要件を間違えています。
+ 
+ 無限の迷宮というのは「途切れることのない」迷宮です。まだ見えない場所に何があるかなんて、気にする必要はありません。「いままでに訪れた場所」と「これから訪れる場所」ができていれば、それでよいというわけです。「これから訪れる場所」も今いる場所から1px先とか2px先とかでも良いわけで、最後までたどり着くかわからないような場所を生成する必要はありません。
+ 
+ さらにふらふらコスモノートは強制スクロール式のゲームです。「今まで訪れた場所」にもう一度訪れることは有りえません。というわけで、必要な迷宮は「画面の中」と「画面の少し先」の部分だけで、ずうっと先なんて生成する必要はないし、いままで訪れた場所をずっと保存しておく必要もなくなりました。だいぶ問題が簡単になりましたね。
+ 
+ これで「無限っぽく感じる迷宮」を作れそうです。もっというと「無限のインタフェースを満たした迷宮」ですかね。アヒルのように鳴き、アヒルのように歩くものはアヒルだという話です。
+ 
+\subsection{実装する}
+　実装します。もっと細かいことを決めてから実装をはじめるのも良いと思いますが、私は書きながら「あれ？　ここも決めないとな」とか言ってその場で適当に決めてしまうタイプの人間です（こういうタイプの人間は大したものは作れないことになっていて、大したものを作りたい場合はしっかり設計を固めてから実装しましょう。実装が考えてやるものではなくて「やるだけ」と言えれば上々な気がします）。
+ 
+ まずはどのくらいの単位で作っていくかを決めましょう。つまり、画面いっこをドーンと生成するのか、それとも、1マスずつ生成していくのかという話です。
+ 
+ 今回は、一行ずつ作ることにしました。n行で一画面になります。こういう方針にしたのは、画面をスクロールするときには一行単位で更新するからです。
+ 
+　では、この一行が満たすべき要件は何でしょうか。今回の場合は「1マス以上の幅の穴が一箇所だけあいている」ことになりそうです。さらに「前の行の穴から連続している」という条件も必要ですね。これらを満たさない一行が混じった場合の迷宮のイメージ図を後に載せますが、辿り着けない穴が開いていたり、最悪行き止まりになってしまうという場合が生まれます。
+ 
+\begin{figure}
+ \centering
+   \includegraphics[width=60mm]{figures/badfield.png}
+ \caption{だめな迷宮}
+ \label{fig:badfield}
+\end{figure}
+
+\subsection{ほんとに実装する}
+ 前節では実装すると言ってしなかったので、本節では本当に実装していきます。ここではPythonを使います。
+
+\subsubsection{最初の実装}
+
+\begin{lstlisting}
+def makeLine(width):
+	return [0 for i in range(width)]
+\end{lstlisting}
+
+ 穴は1、非穴は0で表現することにして、一行を配列に収めます。$[...]$ の部分はちょっとPython独自の記法なのでわからない人にはわからないと思いますが、大きさ $width$ の配列を生成します。今回は0で埋まっています。
+ 
+ さて、ここに穴をあけていきます。穴は、とりあえず適当な場所に、適当な大きさの穴をあけちゃいましょう。
+ 
+\begin{lstlisting}
+import random
+def makeLine(width):
+	line = [0 for i in range(width)]
+	p = random.randrange(width)
+	for i in range(random.randrange(width)):
+		line[p+i] = 1
+	return line
+\end{lstlisting}
+
+ ランダムな場所から、ランダムな大きさの穴をあけます。とはいえ、今は、ほんとうにランダムにしているので、配列の範囲外にアクセスしてしまいかねません。もうちょっと改善しましょう。
+ 
+\begin{lstlisting}
+import random
+def makeLine(width):
+	line = [0 for i in range(width)]
+	p = random.randrange(width)
+	for i in range(random.randrange(width-p)):
+		line[p+i] = 1
+	return line
+\end{lstlisting}
+
+ このあたりはPythonのrandomモジュールについての知識が必要になってややこしいですが、穴を開ける時の幅を、範囲外アクセスがない程度に収めます。
+ 
+ いまの状態で、例えば10行を生成すると、こんな感じです。
+ 
+\begin{verbatim}
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+[0, 1, 1, 1, 1, 1, 1, 1, 0, 0]
+[0, 0, 1, 1, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 1, 1, 0, 0, 0, 0, 0]
+[0, 0, 1, 1, 1, 1, 1, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+[0, 0, 1, 1, 1, 0, 0, 0, 0, 0]
+\end{verbatim}
+
+ 穴のあいていないところや、前の行から連続して辿れないところがあってちょっと問題ですね。これらを改善していきましょう。
+
+\subsubsection{最小の幅をきめる}
+
+ とりあえず、最小の穴のサイズを決めましょう。現状だと、穴の大きさが0ということが有りうるのですが、これはちょっといただけませんからね。
+ 
+\begin{lstlisting}
+import random
+def makeLine(width, holeminwidth):
+	line = [0 for i in range(width)]
+	p = random.randrange(width-holeminwidth)
+	for i in range(random.randrange(holeminwidth, width-p)):
+		line[p+i] = 1
+	return line
+\end{lstlisting}
+
+ holeminwidthという引数を追加して、少なくともこの大きさの穴が空くようにしました。
+ 
+\begin{verbatim}
+0000111110
+0000111100
+0111111110
+0000111100
+1111111100
+0111100000
+0000011110
+0011111110
+1111110000
+0001111000
+\end{verbatim}
+
+ 適当に生成しました。実にいい感じですが、真ん中のあたりでぶっつり途切れてしまっていますね。というわけで、次はこの辺を修正していきます。
+ 
+\subsubsection{前の行と合わせる}
+
+\begin{lstlisting}
+import random
+def makeLine(width, holeminwidth, prevbegin, prevend):
+	line = [0 for i in range(width)]
+	p = random.randrange(max(0, prevbegin-holeminwidth), min(width-holeminwidth, prevend+holeminwidth))
+	for i in range(random.randrange(holeminwidth, width-p)):
+		line[p+i] = 1
+	return line
+\end{lstlisting}
+
+ 新しく引数にprevbeginとかprevendを追加しました。これは、前の行の穴の開始位置と終了位置を表していて、少なくともこの間に穴を一つ開けておけば、道はつながります。さらに、次の行のために今回の行の開始位置と終了位置を返すようにしてみます。
+
+\begin{lstlisting}
+import random
+def makeLine(width, holeminwidth, prevbegin, prevend):
+	line = [0 for i in range(width)]
+	p = random.randrange(max(0, prevbegin-holeminwidth), min(width-holeminwidth, prevend+holeminwidth))
+	w = random.randrange(holeminwidth, width-p)
+	for i in range(w):
+		line[p+i] = 1
+	return line, p, p+w
+\end{lstlisting}
+
+ 適当に50行くらい生成してみます。四段組くらいでだします。
+
+\begin{multicols}{4}
+\begin{verbatim}
+0001111100
+0000011110
+0000111110
+0001111110
+0011111110
+0001111000
+0011111110
+0011111100
+1111110000
+0001111100
+0011111000
+0111110000
+0000111100
+0000011110
+0001111100
+0001111000
+0001111100
+0000011110
+0001111100
+1111111110
+0001111110
+1111111100
+0011110000
+0000111100
+0011111000
+0111111000
+0000011110
+0111111100
+0000111110
+0001111110
+0000011110
+0000011110
+0011110000
+0000111100
+0000011110
+0001111110
+0000111110
+0111110000
+0000011110
+0011111110
+\end{verbatim}
+\end{multicols}
+
+\begin{figure}
+ \centering
+   \includegraphics[height=100mm]{figures/maze.png}
+ \caption{生成された迷宮}
+ \label{fig:maze}
+\end{figure}
+
+ いい感じに見えますね。こんな感じで、あとは難易度に合わせて幅を調整したりすると、迷宮がつくれそうです。
+ 
+\section{おしまいに}
+
+ ソースコードをこんなにたくさん、重複して乗っけたのに、そんなにページを稼げませんでした。短くて、それなりに親切で、基本を抑えてる人には十分わかる話が書けたとは思っていますが。
+ 
+ このお話がわかるような人に向けて、少しだけ。こんなサボりじゃなくてちゃんとしたアルゴリズムを考えられる頭を作るほうが良いですよ、ということと、じつは上のプログラムは境界を適当に書きすぎててまだ不具合が残ってるよとかいうことをお伝えしておきます。
+ おしまい
+
+\end{document}
+
+
