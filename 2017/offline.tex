@@ -1,0 +1,523 @@
+\documentclass[12pt,a4paper]{jsarticle}
+
+
+\usepackage{natbib}
+\usepackage{graphicx}
+%\usepackage[top=30mm,bottom=30mm,left=25mm,right=25mm]{geometry}
+
+\usepackage{fancyhdr} % ヘッダーフッター
+\usepackage{lastpage}
+
+\cfoot{\thepage}
+
+\usepackage{listings} % プログラムソースコード
+\usepackage{inconsolata}
+\renewcommand{\lstlistingname}{リスト}
+\lstset{language=C++,
+  breaklines=true
+  basicstyle=\ttfamily\scriptsize,
+  commentstyle=\textit,
+  classoffset=1,
+  keywordstyle=\bfseries,
+  frame=tRBl,
+  framesep=5pt,
+  showstringspaces=false,
+  tabsize=2
+}
+
+\title{君は知っているか……。\\ひっくり返しても、ひっくり返さなくても、\\WMは\rotatebox[origin=c]{180}{WM}なのだということを。}
+\author{ふるつき}
+\date{\today}
+
+% ======================
+\begin{document}
+
+\maketitle
+\section{それってマジクールじゃね？}
+　ようお前ら、ロックしてるか？　俺はいつでもロックだ。なぜなら俺が、俺こそがロックだからだ。今日はちょっとお前らに聞きたいんだが、マジでクールなお前らはどんなOSを使ってるんだ？　……オーケー、わかった。聞き方が悪かったんだろ？　で、なんて名前のディストリビューションなんだ？　…………。……まあいい、俺はUbuntuを使ってるんだぜ？　マエストロは「Ubuntuは中学生のOS」って言うけど、そんなに悪いもんでもないって俺は思うぜ。
+ 
+ ところでこのUbuntuなんだが、少し前までは「Unity」っていうWMがメインを張ってたんだ。その前は「Gnome2」ってやつだったんだが、Unityですっげぇ格好良くなってよ。モーションの一つ一つに俺の心が踊ったね。でもその代わり、すっげぇ重いんだよ。ガチでやってらんないよな。だから最近は「Gnome3」がメインなんだよな。俺もめっちゃ使ってる。文句なしだね。
+ 
+ お前らのOSではどんなWMが動いてるんだ？　え？　WMって何かって、そりゃあ……\textbf{Window Manager}じゃんかよ。お前のPCつけたら広がってる世界のことだよ。俺の周りではやっぱりAwesomeが人気だよな。あれはすっげぇいいタイリングマネージャだと思うよ。俺も一時期使ってたんだが、Chromeのタブと相性が悪くてやめちまった。あとはXfceなんて鉄板だな。軽いのに痒いところにも手が届く力強さがあるって思うね。KDE、Cinnamon、Mateなんかはちょっと俺には違いがわからねぇが、どれもこれもめっちゃ良く出来てるよな。他のWMについては悪いな、全然わからねぇ。
+ 
+ えっ、まじかよ twm 使ってるのか！？ twm っていやぁLinuxでもデフォルトのWMじゃねぇか。さすがだぜ。あのシンプルを極めて極まってる感じがすげぇよな。ハッカーって感じだぜ。まあ情報工学科でもFVWMを使ったりLXDEをつかったりするんだけどな。
+
+ まあ、何が言いたいかって、WMっていうのはお前らがOSを起動してログインして、一番最初に出会う相手ってことだよ。WMがユーザインタラクションの9割を支配してるってことだ。WMにはこだわっていきたいよな。
+ 
+ どうやってこだわるか、わかるか。一つには、設定ファイルをめっちゃ書くってのがあるよな。俺はSuper+Returnでターミナルが起動するようにしてるけど、これはまじでクールだ。よく使うアプリケーションは一瞬で立ち上がって欲しいし、ウィンドウやワークスペースの切り替えをクールにこなしたいよな。そのために俺の最強のコンフィグを作るんだ。これは燃えるね。
+ 
+ でももっと燃えることもある。それは\textbf{WMを作っちまう}ってことだ。これには心が震えるね。俺らみたいな人間が作りたいものといやぁ、OS、プログラミング言語、CPUの\textbf{OPC}って相場が決まってるが、WMだって作りたいね。そう、WMを作る。これってマジクールじゃね？
+ 
+ 
+ \section{お前はWMがどういう奴か、知ってるか}
+ 
+ WMがなにをやってるのか、それって難しい問いだと思うぜ。だってよWindow Manager なんて抽象的すぎるんだ。Window を Management するなんて、何も言ってないのと一緒だぜ。お前は答えられるか？ WMって何だ？
+
+俺もわからなかったから、調べたんだ。そう、わからなければ調べりゃいいんだ。かんたんなことだろ？　それで答えが手に入るとは限らないけどな。でも今回は、それなりにわかったぜ。答えは一つじゃないってことも。
+
+例えばWMは「Windowを終了」するためのインターフェースを提供するんだ。お前のWMでは、Windowの右上か左上にアプリケーションを終了するボタンが表示されてないか？　あるいは、Alt+F4とか、Super+qとか、とにかく「この方法でWindowを閉じれるぜ」って方法が。その仕事をやってくれているのはWMだったんだ。もちろん他にもあるぜ。「Windowを動かす」「フォーカスを変更する」のもWMの仕事なんだ。WMがない世界では、Windowは表示された場所から動けないか、すべてのアプリケーションが、自分自身を動かすための処理を内部に持っていなくちゃダメになっちまう。それって興味がないことにリソースを割くってことだろ、全然クールじゃないな。スタック型の、つまり「Windowが重なって表示される」WMで、後ろのWindowをクリックしたり、マウスを乗っけたりしたらそのWindowが手前に出てくる、これもWMが仕事してくれてるからなんだぜ。
+
+それだけじゃない、お前は「仮想デスクトップ」って使ってるか？　あれすっげぇ便利だよな。あれは全部WMがやってくれてることなんだぜ。WMがなけりゃお前のディスプレイはターミナルやブラウザやエディタで埋まっちまうってわけだ。
+
+今まで当然のように使ってた機能だけど、それはWMが支えてくれていたんだってことがわかるよな。もちろんそれを知らなくて「俺はそれがどうやって動いてるのかわからねぇ。でも俺はそれを知る必要はないんだ。それってすっげぇクールなことだろ？」っていうのもマジかっけぇと思うよ。でもそれと同じかそれ以上に「俺はまじでこのWMに感謝してるんだ。だって俺がWindowを動かせて、デスクトップを切り替えられるのはWMのおかげだからな」って言ってるやつもクールだね。
+
+\section{じゃあ早速WM作ろうぜ。こんなにクールなことがあるか？}
+
+まあ待て、そう焦るんじゃねぇ。気持ちが燃えてるのはすっげぇいいことだと思うよ。だけど「急いては事をし損じる」んだぜ。まずやるべきことがあるってこった。
+
+俺たちは「WMが何をするか」はだいたいわかった。でも「WMがどうやってそれをやってるか」、その How がまだわかってないんじゃねぇのか？ まずはざっとでいいから概念を習得することは重要だ。伝説のギタリストだって生まれたときからFのコードを奏でられたわけじゃないってことだ。
+
+俺の調べてきたところだと、WMでもなんでもとにかくグラフィカルなものはみんな \textbf{X Window System} ってやつの一部で、 \textbf{X Server} ってやつの上で動いてるんだ。この X Window System は今日までLinuxやUnixのWindowをすべてまとめあげてきたサイコーのプロトコルなんだ。X Window Systemはサーバクライアント型のアーキテクチャを採用していて、X Serverのようなサーバはクライアントの要求を受け付けて、Windowを描画してくれるマジですげぇ奴なんだよ。WMはクライアント側で、他のすべてのクライアントを下に置く、すっげぇ親分って感じなんだな。
+
+それでこのX Window Systemに従ってアプリケーションを作るなら、それ用にすっげぇライブラリが用意してあるんだ。\textbf{XLib}とか\textbf{XCB}ってのがそうなんだよな。Xlibは古くから使われてる、唯一無二のスタンダードってやつだった。これはサイコーだと俺も思ったんだが、XCBってのが出てきたんだよ。XCBはXlibを置き換えるライブラリで、Xlibよりも使いやすく、小さく、速くなってるって言うんだからまじでGODだよな。なんでもXCBのほうがより、X Window Systemのプロトコルそのものに近いとか、XCBは非同期性が高いとか、マジでイケてるらしい。
+
+だから俺はXCBを使うことにしたよ。ロックの心は古いものも大事にするけど、新しいことに挑戦したい気持ちを止めることはできねぇんだ。おっと待て、Waylandのことは言わないでくれ、あれは俺にはよくわからなかったんだ。恥ずかしい話だけどそういうこともあるんだよ。
+
+\section{俺たちはどんなWMを作りたいんだ？}
+
+目標を定めるって大事なことだよな。俺は飽きるまでやればいいと思うんだけど、せっかちなお前らのために、この記事でどこまで作るかを書いておいてやるよ。それで、「ふーんこの程度か……」と思って読むのをやめても構わない。ハートが乗ってないときには何をやっても身につかねぇからな。
+
+それで今回は「Windowを表示」できて「動かせ」て「フォーカスを変更」できて「終了」できるところまでを作るぜ。それより先はもうお前らが自分でやらなきゃならねぇってことだ。
+
+ついでだ、このセクションで「どの言語でつくるか」っつー、プログラマ的には一番重要なところも決めていくぜ。今回使うのは……そう、\textbf{D言語} だ。XのプログラミングをするならC言語が基本ってのは常識だが、D言語はC言語に対しても高い互換性を持ってる。それにすっげぇ書きやすいし……なにより、\textbf{俺が愛してる}ってことが重要だ。俺の熱いspiritが、D言語を選べって言ってるのさ。開発環境は Ubuntu だ。俺は最近出たばかりの \textit{Bionic Beaver} こと18.04を使うが、\textit{Xenial} とかでもきっと動作は変わらねぇ。
+
+\section{まずは慣れていくところから始める。基本のキだぜ}
+
+
+D言語の開発準備はととのったか？ \textbf{DMD}\footnote{https://dlang.org/download.html} を落としてくるだけで、D言語が使えるようになる。最近はまじでイケてるインストールスクリプトがあって、もうそれだけでお前は \lstinline{dmd} コマンドが使えるようになる。更にパッケージマネージャの\textbf{DUB}\footnote{https://code.dlang.org/download} もあったほうがいい。こういうツールを使いこなして、本当に重要な事をやるってのが、クールってもんだ。これはインストールスクリプトでインストールしたときは一緒に入ってくるけど、 \lstinline{apt-get install -y dub} でも手に入るから、そっちを使ってもいいぜ。
+
+そこまでできたら、今度はプロジェクト用のディレクトリを作らなくちゃな。 \lstinline{mkdir} くらいはできるよな？　俺はjokenをマジリスペクトしてるから、今回はプロジェクト名を \textbf{jokenwm} にしちまおう。そういうわけで、 \lstinline{mkdir jokenwm} を実行するんだ。ちなみに俺が個人的に作ってる WM は \textbf{wmderful}\footnote{https://github.com/theoldmoon0602/wmderful\\/tree/b4d69371449c66575ef998bf328d1ab65adf9644} って言うんだぜ。マジでイカした名前だろ？　俺はこの名前を思いついちまったからWMを作り始めたと言っても過言じゃないね。脚注に示したURLのコミットが、今回作るところまでだから、参考にしてもいいぜ。
+
+おっと、話が逸れちまった。それで、 jokenwm に \lstinline{cd} したら、 \lstinline{dub init} だ。これは「D言語のプロジェクトを作るから、必要なもんを準備してくれよな」って意味なんだよな。そしたら対話が始まって色々聞かれるけど、基本的にデフォルトの選択肢を選んでいればいい。つまり俺たちはReturnを押すだけの猿になれるってことだ。だけど最後の \lstinline{Add dependency} の項目に \lstinline{xcb-d} を入れるのだけは忘れないでくれよ。これがなくちゃXCBでプログラミングできないんだ。
+
+\begin{lstlisting}[language=bash]
+/tmp/jokenwm> dub init                                                 14:23:14
+Package recipe format (sdl/json) [json]: 
+Name [jokenwm]: 
+Description [A minimal D application.]: 
+Author name [theoldmoon0602]: 
+License [proprietary]: 
+Copyright string [Copyright (c) 2018, theoldmoon0602]: 
+Add dependency (leave empty to skip) []: xcb-d
+Added dependency xcb-d ~>2.1.0
+Add dependency (leave empty to skip) []: 
+Successfully created an empty project in '/tmp/jokenwm'.
+Package successfully created in .
+/tmp/jokenwm>                                                          14:23:28
+\end{lstlisting}
+
+さて、これで大体の準備が終わったってわけだぜ。この状態で \lstinline{dub build} すればバイナリ、ここではELFが生成できるし、 \lstinline{dub run} すればバイナリを実行できる。バイナリの名前は \lstinline{jokenwm} になっていると思うから \lstinline{./jokenwm} としてもいい。ソースコードは \lstinline{src/} にあって、エントリポイントは \lstinline{src/app.d} の \lstinline{main} って関数だ。まあとりあえずは \lstinline{dub run} してみることをおすすめするね。ここで、例えば \lstinline{Error: linker exited with status 1} ってエラーが出て、エラーメッセージの中に \lstinline{/usr/bin/ld: cannot find -lxcb} を見かけたら、 すかさず \lstinline{apt-get install -y libx11-xcb-dev} だ。必要なライブラリが手に入る。
+
+そしたら早速、XCBでのプログラミングを始めよう。XCBでプログラミングするときはまず、 X Server に接続することが必要だ。X Serverと通信をするアプリケーションを書くんだからな。そのためにはずばり、\lstinline{xcb_connect} 関数を使う。どうだ、この完璧な名前は？　最高だろ？　そして、接続は失敗することもあるからエラーチェックもしないといけない。そしてその後は、スクリーンとルートウィンドウの取得だ。これが何かは今は知らなくても構わない。あとで散々お世話になるってことだけわかってればな。まずはここからだ。かんたんだから、 \textit{src/app.d} をそのまま見せてやる。
+
+\begin{lstlisting}[language=C++] 
+import xcb.xcb;
+
+import std.experimental.logger;
+
+void main()
+{
+	auto conn = xcb_connect(null, null);
+	if (conn is null || xcb_connection_has_error(conn) != 0) {
+		fatal("failed to connect X Server");
+	}
+	auto screen = xcb_setup_roots_iterator(xcb_get_setup(conn)).data;
+	auto root = screen.root;
+}
+\end{lstlisting}
+
+D言語はよくできた言語だから、自明な型は \lstinline{auto} で済ませてもいい。便利だろ？　もちろん \lstinline{xcb_connectino_t*} とか \lstinline{xcb_screen_t*} とか \lstinline{xcb_window_t} とか書いてもいいが、面倒だろ？
+
+\section{お楽しみの時間だ！　本格的にProgrammingしていこうぜ！}
+
+さて、お次は、フックするイベントの登録だ。WMはX Serverへの要求をインターセプトしてWindowの管理を行う。その要求のうち、ほしいものはちゃんと登録しなくちゃならねえってことだ。一気にややこしくなった気がしちまうが、怖がることはねぇ。
+
+\begin{lstlisting}[language=C++]
+uint ROOT_EVENT_MASK = XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT|
+	XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY|
+	XCB_EVENT_MASK_STRUCTURE_NOTIFY|
+	XCB_EVENT_MASK_ENTER_WINDOW|
+	XCB_EVENT_MASK_POINTER_MOTION|
+	XCB_EVENT_MASK_POINTER_MOTION_HINT|
+	XCB_EVENT_MASK_KEY_PRESS|
+	XCB_EVENT_MASK_BUTTON_PRESS|
+	XCB_EVENT_MASK_BUTTON_RELEASE;
+
+auto cookie = xcb_change_window_attributes_checked(conn, root, XCB_CW_EVENT_MASK, &ROOT_EVENT_MASK);
+if (xcb_request_check(conn, cookie) !is null) {
+	fatal("another window manager is already running");		
+}
+xcb_flush(conn);
+\end{lstlisting}
+
+どんなイベントを受け取るかは \lstinline{xcb_change_window_attributes_checked} 関数で指定する\footnote{checkedがつかないものもある。違いについては次を参照 \\ https://wiki.mma.club.uec.ac.jp/clear/wm\_devel/2012-12-23}。第三引数が、そういう要求をしてて、第四引数に渡してる値が、「どんなイベントを」を指定してるってわけだ。そしてこの中の「\lstinline{SUBSTRUCTURE_REDIRECT}」っつー値を指定できるのはたった一つのアプリケーションだけで、そいつがWMというわけなんだな。
+
+ところで、ここまで作ってきて \lstinline{dub run} とかしたときに \lstinline{another window manager is already running} ってメッセージと一緒にアプリケーションが死んじまうって場合があると思うんだが、むしろ出ないときはお前の環境すげえなって思うが、こういう場合には \textbf{Xephyr} が本当にオススメだ。Xephyrを使うと仮想のX Serverをもう一個立ち上げることができるんだ。 \lstinline{apt-get install -y xserver-xephyr} でインストールできて、使うときは \lstinline{Xephyr :1} だ。これでjokenwmを立ち上げるときに\lstinline{DISPLAY=:1 ./jokenwm} とか \lstinline{DISPLAY=:1 dub run} とかすれば、そっちにはWMはないから怒られなくて開発がスムーズってモンよ。
+
+さて、ここまでできたら、骨格のほとんどが完成したと言っていい。あとは、「イベントループ」を書くだけだ。イベントループというのはかんたんで、「ずっとループを回し、イベントを受け取ったらそれに合わせて処理を行う」ことだ。最小のイベントループだと、こんな感じになるな。
+
+\begin{lstlisting}[language=C++]
+while (true) {
+	auto event = xcb_wait_for_event(conn);
+	switch (event.response_type) {
+		case XCB_MAP_REQUEST:
+			auto e = cast(xcb_map_request_event_t*)event;
+			// 何かする
+			break;
+		default:
+			break;
+	}
+}
+\end{lstlisting}
+
+これは\lstinline{XCB_MAP_REQUEST} だけを処理するループだけど、他のイベントも同様に処理できるってのはわかるだろ？　おいおい、もうほとんどできちまったぜ。
+
+そういえば、D言語では構造体のポインタから要素を参照するときに \lstinline{->} 演算子じゃなくて \lstinline{.} 演算子なんだって知ってたか。アロー演算子を書かなくて済むのは楽だよな。
+
+\section{え、そろそろWindow出せるんじゃね？　イヤッホウ！}
+
+お前らに朗報だ。ここから先はもう、各種イベントを処理していくだけなんだぜ。もちろんそれが難しいといえばそうなんだが。まあ気持ちが上がってくるだろ。いいことだ。
+
+あるアプリケーションがWindowを描画したいと思うとする。するとそいつは \lstinline{xcb_create_window} 関数で Window を作る。この状態ではまだWindowは作られただけで描画はされていない。そこで \lstinline{xcb_map_window} 関数を使って X Server にWindowの表示を要求するのさ。このときに飛んでるイベントが \lstinline{XCB_MAP_REQUEST} ってわけ。だが、ここに割って入るのがWMだ。WMはX Serverに向けて要求された\lstinline{XCB_MAP_REQUEST} をインターセプトしてくる。これができるのはWMだけだし、このイベントを受け取るためのマスクが、 \lstinline{XCB_EVEMT_MASK_SUBSTRUCTURE_REDIRECT} だったんだよな。
+
+それで、WMはこれをインターセプトしてきて、Windowが作られようとしていることを知り、自分の管理下に置くわけ。ほとんどのWMではここで「フレーム」っつーWindowを作って、これを要求してきたWindowの親Windowにして、タイトルバーとかボタンとかをフレームに描画するわけだが、それは面倒なのでjokenwmではやらない。jokenwmでやることは作られたWindowをいつでも操作できるように持っておくことだけだ。
+
+これらの処理を終えたあと、WMからX Serverに向けて \lstinline{xcb_map_window} 関数を実行すると、晴れてそのWindowは描画されるってわけだ。大体わかっただろ？　この処理を書いていくぜ。
+
+\begin{lstlisting}[language=C++]
+case XCB_MAP_REQUEST:
+				auto e = cast(xcb_map_request_event_t*)event;
+				xcb_map_window(conn, e.window);
+				xcb_flush(conn);
+                auto new_client = new Client(e.window);
+                clients[e.window] = new_client;
+				break;
+\end{lstlisting}
+
+変数\lstinline{e}は色々なメンバを持っているが、そのうちの \lstinline{window} はそのまま、表示を要求しているWindowのidなんだ。それを \lstinline{xcb_map_requst}に渡す。かんたんだろ？ \lstinline{xcb_flush} は忘れやすいから注意だな。これを忘れて「なんでバグってんだっけ？」ってなることも多い。
+
+\lstinline{clients} とか \lstinline{Client}っていうのは、ま、こんな定義だ。
+
+\begin{lstlisting}[language=C++]
+class Client {
+public:
+	xcb_window_t window;
+	this(xcb_window_t window) {
+		this.window = window;
+	}
+}
+Client[xcb_window_t] clients;
+\end{lstlisting}
+
+\lstinline{Client}クラスはそのまま、描画されてるWindowのことだ。いまはwindowだけしかメンバに持っていないから無用に見えるかも知れないが、今後フレームを実装するとか、そういうときのためにクラスにしておいた。
+
+そして\lstinline{clients} は、\lstinline{xcb_window_t} をキーに持つ連想配列だ。連想配列にしておくと便利なんだよな。\lstinline{xcb_window_t} は \lstinline{uint} のエイリアスだからコピーしても重たくならないんだぜ。
+
+さて、これでjokenwmを起動して（Xephyrを起動した状態で\lstinline{DISPLAY=:1 dub run} でいいぜ）、イベントループに入ったことがわかったら、別のターミナルから\lstinline{DISPLAY=:1 gnome-terminal} をしてみてくれ。別に \lstinline{gnome-terminal} にこだわることはないけどな。するとどうだ！？　Xephyrに確かに \lstinline{gnome-terminal} のWindowが出てきだろ？　イヤッホウ！　いい感じだぜぇ。
+
+\section{Windowを動かしたいだろ？　そうだろ？}
+
+さあ、ここまで来たらあとはほとんど説明なんていらねぇよな。コードがすべてを語ってくれるぜ。だけどそれじゃあ不親切だから、少しは解説させてくれ。何しろ不親切ってのは全然クールじゃないからな。
+
+次はWindowを動かしてぇ。こういうときは \lstinline{xcb_configure_window} 関数を使う。これも \lstinline{xcb_change_window_attributes} 関数みたいなやつで、色々設定できるんだが、その中の一つに、Windowの座標もあるってわけだ。
+
+これをいつ行うかが問題だが、もちろんお前らはマウスで操作したいよな？ そういうときは \lstinline{XCB_BUTTON_PRESS}、 \lstinline{XCB_MOTION_NOTIFY}、 \lstinline{XCB_BUTTON_RELEASE}の各種イベントの出番だ。それぞれ、「マウスのボタン押し込み」「マウスの移動」「マウスのボタン押し終わり」のイベントになってる。完璧だろ？
+
+だが、問題もあるんだな。現状ではこれらのイベントを受け取ることはできねぇ。普通はできるんだが、肝心のとき、「マウスカーソルがWindowの上にあるとき」にこれらのイベントは、Window側に吸われちまうんだ。
+
+そいつは困る。だからちゃんと、そういうときにもイベントを通知してくれるようにする関数があるんだぜ。それが、 \lstinline{xcb_grab_button} だ。これはWindowに対して適用する関数で、そのWindowに対してボタンが押されたときに、イベントの通知をWMに投げてくれるってわけよ。引数によって、「WMにだけ投げる」「WMにも投げるけどWindowにも投げる」とか、「イベントを投げたら止まる」「止まらない」を選べるスグレモノなんだぜ。
+
+だから先にこっちを書いちまう。これは、 \lstinline{xcb_map_window} の手前に書くといいぜ。
+
+\begin{lstlisting}[language=C++]
+xcb_grab_button(conn, 1, e.window,
+		XCB_EVENT_MASK_BUTTON_PRESS|
+		XCB_EVENT_MASK_BUTTON_RELEASE|
+		XCB_EVENT_MASK_POINTER_MOTION,
+		XCB_GRAB_MODE_ASYNC,
+		XCB_GRAB_MODE_ASYNC,
+		e.window, XCB_NONE,
+		XCB_BUTTON_INDEX_1,  // LEFT BUTTON
+		XCB_MOD_MASK_1|XCB_MOD_MASK_2);  // Alt
+\end{lstlisting}
+
+これはちょっとマジでややこしいし勘弁してほしいよな。でもまあ、そんなに気にすることはねえよ。こういうもんだと思ってていいし、気になるなら調べりゃ済むことだ。ただ、XCBについての情報はインターネットの海広しと言えどもまるで転がってないけどな。
+
+とにかくこれを書いておけばアンタイってわけよ。そしたらやっと \raggedright\lstinline{XCB_EVENT_MASK_BUTTON_PRESS} あたりを処理できるな。こっちはコードを見たほうが早いだろうから、コードで示しちまうか。
+
+\begin{lstlisting}[language=C++]
+case XCB_BUTTON_PRESS:
+	auto e = cast(xcb_button_press_event_t*)event;
+	if (e.detail == XCB_BUTTON_INDEX_1 &&
+			(e.state & XCB_MOD_MASK_1) && focusing !is null) {
+		auto geometry_c = xcb_get_geometry(conn, focusing.window);
+		auto geometry_r = xcb_get_geometry_reply(conn, geometry_c, null);
+		if (geometry_r is null) {
+			break;
+		}
+		is_moving = true;
+		oldx = geometry_r.x - e.root_x;
+		oldy = geometry_r.y - e.root_y;
+	}
+	break;
+case XCB_MOTION_NOTIFY:
+	auto e = cast(xcb_motion_notify_event_t*)event;
+	if (is_moving && focusing !is null) {
+		uint[] values = [
+			oldx+e.root_x,
+			oldy+e.root_y,
+		];
+		xcb_configure_window(conn, focusing.window,
+				cast(ushort)(XCB_CONFIG_WINDOW_X|XCB_CONFIG_WINDOW_Y),
+				values.ptr);
+		xcb_flush(conn);
+	}
+	break;
+case XCB_BUTTON_RELEASE:
+	is_moving = false;
+	break;
+\end{lstlisting}
+
+ちょっと長いけど頑張って読んでくれ。こっちでも解説するからよ。まあ上から行くんだが、まず \lstinline{detail}だが、これには「マウスのどのボタンが押されたか」という情報が格納されている。\lstinline{XCB_BUTTON_INDEX_1}は左クリックだ。 \lstinline{state} には「マウスのボタンが押し込まれたとき一緒に押されていた制御キー」が格納されていて、\lstinline{XCB_MOD_MASK_1} は Altキーのことだ\footnote{ちなみに\lstinline{XCB_MOD_MASK_2}はNumlockを表し、これがないとうまく行かないが、なぜなのかはわからなかった}。\lstinline{focusing}は今フォーカスしているClientのことで、実は\lstinline{XCB_MAP_REQUEST}の処理にちょっと足してある。こんな風にしたってわけ。
+
+\begin{lstlisting}[language=C++]
+xcb_map_window(conn, e.window);
+xcb_flush(conn);
+
+auto new_client = new Client(e.window);
+clients[e.window] = new_client;
+focusing = new_client;
+break;
+\end{lstlisting}
+
+この\lstinline{focusing}がなけりゃ、WMはどのWindowを動かせばいいのかがわかんなくなっちまうからな。
+
+そいで、\lstinline{xcb_get_geometry}だが、そのままWindowの座標を取得する関数だ。XCBは非同期だから\lstinline{xcb_get_geometry}自体は\lstinline{cookie} と呼ばれる値を返してきていて、本当に欲しい値は\lstinline{xcb_get_geometry_reply} で取得する。
+
+このWindowの座標から、マウスの座標、これが \lstinline{(root_x, root_y)}だが、これを減じたものを \lstinline{(old_x, old_y)}にしてある。なんでこうなってるかは、\lstinline{XCB_MOTION_NOTIFY} の処理を見たらわかるな？　正直言ってこことその次の \lstinline{XCB_BUTTON_RELEASE} についてはもうなんにも説明することがない。せいぜい\lstinline{values}の\lstinline{ptr}はD言語の配列である\lstinline{values}をC言語の配列として扱うための処理だってことくらいかな。
+
+まじでここまでプログラムを書いて、実行して、Windowの上にカーソルを持ってきて、Altキーを押しながらドラッグしたらWindowが動いてすっげぇ感激するから見てくれ。これがパッションってやつなんだ……！
+
+\section{ここまできたらフォーカスなんてマジ楽勝だよな}
+
+次は、「二つWindowを出したときのフォーカス」だ。今は\lstinline{focusing}はWindowを作ったときにしか変更されない。これじゃあ動かせるのは最後に作られたWindowだけになっちまう。だからフォーカスを変更したい。こういう自然な流れをマジリスペクトしていきたいぜ。
+
+今回のjokenwmでは、フォーカスが移るタイミングを「Window領域にマウスが乗ったタイミング」としたい。なぜならこれが楽だからだ。最初は楽なところから小さく始める。これが肝心だってことは俺にはもう完全にわかってるね。そして、X Serverが送ってくるイベントの中には \lstinline{XCB_ENTER_NOTIFY} っつー、このために存在するようなイベントがある。
+
+フォーカスが移ったら、そのWindowが最前面に出てきて欲しい。これはまた、 \lstinline{xcb_configure_window} で実現できる。こんな感じだ。
+
+\begin{lstlisting}[language=C++]
+case XCB_ENTER_NOTIFY:
+	auto e = cast(xcb_enter_notify_event_t*)event;
+	if (auto client = e.event in clients) {
+		uint[] values = [XCB_STACK_MODE_ABOVE];
+		xcb_configure_window(conn, client.window, XCB_CONFIG_WINDOW_STACK_MODE, values.ptr);
+		xcb_flush(conn);
+		focusing = *client;
+	}
+	break;
+\end{lstlisting}
+
+たったこれだけで、フォーカスの切り替えが実装できる。おっと、見慣れないif文かも知れないが、これは最高にクールで、「\lstinline{clients}に\lstinline{event}をキーにする要素があればそれのポインタを \lstinline{client} として、if文の内部を実行」してくれるんだぜ。
+
+だが残念なことがある。このままでは\lstinline{XCB_ENTER_NOTIFY}イベントが飛んでこない。このイベントはWindow側で受取の設定をしてやらないとダメなんだ。なんでそんな設計なのかは俺にはちょっとわからねえが、とにかくそうなってるんだ。Window側で受取の設定をするなら、お前ならどこにそのコードを書く？　そうだ、 \lstinline{xcb_map_window} の手前あたりに書きたくなるよな。
+
+\begin{lstlisting}[language=C++]
+uint window_event = XCB_EVENT_MASK_STRUCTURE_NOTIFY|
+	XCB_EVENT_MASK_ENTER_WINDOW;
+xcb_change_window_attributes(conn, e.window, XCB_CW_EVENT_MASK, &window_event);
+\end{lstlisting}
+
+まあこれは……説明しなくてもいいだろ。これでフォーカスの変更までできたってわけだ。もうほとんどできたも同然じゃねぇか。
+
+\section{Windowを終了させる……。クールな響きだ……}
+
+もうあとはやるだけだって思うだろ？　Windowを終了させるだけなら実はそうなんだ。 \lstinline{xcb_destroy_window} を呼ぶだけでいい。だが、一体いつそいつを呼び出すって言うんだ？　やっぱりここは、キーバインドが欲しくならねぇか？　俺はほしいね。\lstinline{Alt+q} とかで終了できたらもう、最高じゃねぇか。ロックだよ。
+
+キーが押された通知を受け取るには……そう、わかってきたな。そういうイベントが確かにある。\lstinline{XCB_KEY_PRESS}と\lstinline{XCB_KEY_RELEASE}がそうだ。だが、こいつもやっぱり「Windowの上では」動作しない。\lstinline{xcb_grab_key}してやる必要があるというわけだ。
+
+更に問題が出てくるのが辛いところだ。これはD言語というか\lstinline{xcb-d}特有の問題なんだが、\lstinline{xcb_grab_key} はもちろん、どんなキーを grab したいかを指定する。これは \lstinline{xcb_keycode_t} 型で、まあ実質 \lstinline{ubyte} なんだが、普通 \lstinline{XK_Return} や \lstinline{XK_q} のような形で定義されている。だが、\lstinline{xcb-d} ではこの定義が行われてねぇってこった。
+
+幸いにもこいつらは定数だから、適当に調べてきて自分で定義してやりゃあいいんだが……すっきりとは行かねぇなあ。クールじゃねぇ。
+
+なんて言ってても仕方ねぇ。実装するぞ。
+
+\begin{lstlisting}[language=C++]
+xcb_grab_key(conn, 0, e.window,
+		XCB_MOD_MASK_1|XCB_MOD_MASK_2,  // Alt
+		cast(xcb_keycode_t)24,  //q
+		XCB_GRAB_MODE_ASYNC,
+		XCB_GRAB_MODE_ASYNC);
+\end{lstlisting}
+
+
+このコードをどこに書くべきか、何をしているかはもうわかるよな？　お前もどんどんロックになってるってことだぜ。もうガンガン容赦なく行くからよ。
+
+\begin{lstlisting}[language=C++]
+case XCB_KEY_PRESS:
+	auto e = cast(xcb_key_press_event_t*)event;
+	if (e.detail == 24 &&
+			(e.state & XCB_MOD_MASK_1) &&
+			focusing !is null) {
+		xcb_destroy_window(conn, focusing.window);
+		xcb_flush(conn);
+		focusing = null;
+	}
+	break;
+\end{lstlisting}
+
+つってもこれだけだ。これで当初の目標は達成したし、jokenwmは一応の完成を見たってわけだ。ここから先は、お前らがもっとクールなWMを作っていってくれよな。
+
+\section{ふるつき}
+
+ふるつきです。5年生です（ほんまか）。今まで5年生と言えば引退していてOBとしてこのJokenOfflineの記事を執筆していたわけですが、我々はjokenに籍を残しているので現役です。
+
+まあそんなことはどうでもよくて、唐突にWMを作りたくなったのでWMの記事を書きました。jokenwmについても記事を書きながらコードも書いたので、結局githubにおいておくことにします（ https://github.com/theoldmoon0602/jokenwm ）。
+
+この記事の執筆にあたって、というかその前のWMの作成にあたって、いろいろなサイト、コードを参照しましたので紹介しておきます。
+
+\begin{enumerate}
+\item https://wiki.mma.club.uec.ac.jp/clear/wm\_devel ほぼ唯一の日本語情報です
+\item https://seasonofcode.com/posts/how-x-window-managers-work-and-how-to-write-one-part-i.html 内容は読まなくてもいい感じですが、Part III の図が参考になります
+\item https://tronche.com/gui/x/xlib/events/processing-overview.html Maskと飛んでくるイベントの関係がまとめられています。
+\item https://xcb.freedesktop.org/manual/index.html XCBのAPI一覧が並んでいるので参考になります。特に構造体のメンバを見に行くことが多いです。
+\item https://github.com/venam/2bwm/ XCBで書かれた小さなWMです。
+\item https://github.com/awesomeWM/awesome awesomeもXCBで書かれています。めちゃくちゃ読みやすいです
+\item https://github.com/Eelis/i3 i3もメジャーなタイリングマネージャで、やはりXCBで書かれています。awesomeと見比べたりしました。
+\end{enumerate}
+
+jokenではこのように急にWMが書きたくなって仕方がなくなり他のことに身が入らなくなるけどすぐ飽きる人間やその他が活動しています。悪いことは言わないからプログラミングをやりたいならjokenに入ったほうがいい。あるいはどの部活にも入らないで家でもくもくしていたほうがいい。でもそれはjokenに入るのの下位互換なきがしてる（部費が発生するのでfalse）。
+
+競技プログラミングをやりたい人間、高専プロコンに出たい人間、セキュリティに興味がある人間なども激しく歓迎します。
+
+えーとえとばいばい。見返したら本当にイカれてんなこの文章。
+
+
+\begin{lstlisting}[language=C++]
+import xcb.xcb;
+
+import std.experimental.logger;
+
+class Client {
+	public:
+	xcb_window_t window;
+	this(xcb_window_t window) {
+		this.window = window;
+	}
+}
+
+void main()
+{
+	auto conn = xcb_connect(null, null);
+	if (conn is null || xcb_connection_has_error(conn) != 0) {
+		fatal("failed to connect X Server");
+	}
+	auto screen = xcb_setup_roots_iterator(xcb_get_setup(conn)).data;
+	auto root = screen.root;
+
+	uint ROOT_EVENT_MASK = XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT|
+		XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY|
+		XCB_EVENT_MASK_STRUCTURE_NOTIFY|
+		XCB_EVENT_MASK_ENTER_WINDOW|
+		XCB_EVENT_MASK_POINTER_MOTION|
+		XCB_EVENT_MASK_POINTER_MOTION_HINT|
+		XCB_EVENT_MASK_KEY_PRESS|
+		XCB_EVENT_MASK_BUTTON_PRESS|
+		XCB_EVENT_MASK_BUTTON_RELEASE;
+
+	auto cookie = xcb_change_window_attributes_checked(conn, root, XCB_CW_EVENT_MASK, &ROOT_EVENT_MASK);
+	if (xcb_request_check(conn, cookie) !is null) {
+		fatal("another window manager is already running");		
+	}
+	xcb_flush(conn);
+
+	Client[xcb_window_t] clients;
+	Client focusing = null;
+	int oldx, oldy;
+	bool is_moving = false;
+	while (true) {
+		auto event = xcb_wait_for_event(conn);
+		switch (event.response_type) {
+			case XCB_MAP_REQUEST:
+			auto e = cast(xcb_map_request_event_t*)event;
+			xcb_grab_button(conn, 1, e.window,
+					XCB_EVENT_MASK_BUTTON_PRESS|
+					XCB_EVENT_MASK_BUTTON_RELEASE|
+					XCB_EVENT_MASK_POINTER_MOTION,
+					XCB_GRAB_MODE_ASYNC,
+					XCB_GRAB_MODE_ASYNC,
+					e.window, XCB_NONE,
+					XCB_BUTTON_INDEX_1,  // LEFT BUTTON
+					XCB_MOD_MASK_1|XCB_MOD_MASK_2);
+			xcb_grab_key(conn, 0, root,
+					XCB_MOD_MASK_1|XCB_MOD_MASK_2,
+					cast(xcb_keycode_t)24,  //q
+					XCB_GRAB_MODE_ASYNC,
+					XCB_GRAB_MODE_ASYNC);
+			uint window_event = XCB_EVENT_MASK_STRUCTURE_NOTIFY|
+				XCB_EVENT_MASK_ENTER_WINDOW;
+			xcb_change_window_attributes(conn, e.window, XCB_CW_EVENT_MASK, &window_event);
+			xcb_map_window(conn, e.window);
+			xcb_flush(conn);
+
+			auto new_client = new Client(e.window);
+			clients[e.window] = new_client;
+			focusing = new_client;
+			break;
+		case XCB_BUTTON_PRESS:
+			auto e = cast(xcb_button_press_event_t*)event;
+			if (e.detail == XCB_BUTTON_INDEX_1 &&
+					(e.state & XCB_MOD_MASK_1) && focusing !is null) {
+						auto geometry_c = xcb_get_geometry(conn, focusing.window);
+				auto geometry_r = xcb_get_geometry_reply(conn, geometry_c, null);
+				if (geometry_r is null) {
+					break;
+				}
+				is_moving = true;
+				oldx = geometry_r.x - e.root_x;
+				oldy = geometry_r.y - e.root_y;
+			}
+			break;
+		case XCB_MOTION_NOTIFY:
+			auto e = cast(xcb_motion_notify_event_t*)event;
+			if (is_moving && focusing !is null) {
+				uint[] values = [
+					oldx+e.root_x,
+				oldy+e.root_y,
+				];
+				xcb_configure_window(conn, focusing.window,
+						cast(ushort)(XCB_CONFIG_WINDOW_X|XCB_CONFIG_WINDOW_Y),
+						values.ptr);
+				xcb_flush(conn);
+			}
+			break;
+		case XCB_BUTTON_RELEASE:
+			is_moving = false;
+			break;
+		case XCB_ENTER_NOTIFY:
+			auto e = cast(xcb_enter_notify_event_t*)event;
+			if (auto client = e.event in clients) {
+				uint[] values = [XCB_STACK_MODE_ABOVE];
+				xcb_configure_window(conn, client.window, XCB_CONFIG_WINDOW_STACK_MODE, values.ptr);
+				xcb_flush(conn);
+				focusing = *client;
+			}
+			break;
+		case XCB_KEY_PRESS:
+			auto e = cast(xcb_key_press_event_t*)event;
+			if (e.detail == 24 &&
+					(e.state & XCB_MOD_MASK_1) &&
+					focusing !is null) {
+						xcb_destroy_window(conn, focusing.window);
+				xcb_flush(conn);
+				focusing = null;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+\end{lstlisting}
+ 
+\end{document}
