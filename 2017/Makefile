@@ -1,7 +1,8 @@
+TEX=offline
 build: offline.tex
-	platex offline.tex && dvipdf offline.dvi offline.pdf
+	platex $(TEX).tex && dvipdf $(TEX).dvi $(TEX).pdf
 view: build
-	google-chrome offline.pdf
+	google-chrome $(TEX).pdf
 clean:
 	ls | grep -v .tex | grep -v Makefile | xargs rm -rf
 
