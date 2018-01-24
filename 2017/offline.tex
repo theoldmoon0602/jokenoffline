@@ -238,6 +238,15 @@ xcb_grab_button(conn, 1, e.window,
 		XCB_GRAB_MODE_ASYNC,
 		e.window, XCB_NONE,
 		XCB_BUTTON_INDEX_1,  // LEFT BUTTON
+		XCB_MOD_MASK_1);  // Alt
+xcb_grab_button(conn, 1, e.window,
+		XCB_EVENT_MASK_BUTTON_PRESS|
+		XCB_EVENT_MASK_BUTTON_RELEASE|
+		XCB_EVENT_MASK_POINTER_MOTION,
+		XCB_GRAB_MODE_ASYNC,
+		XCB_GRAB_MODE_ASYNC,
+		e.window, XCB_NONE,
+		XCB_BUTTON_INDEX_1,  // LEFT BUTTON
 		XCB_MOD_MASK_1|XCB_MOD_MASK_2);  // Alt
 \end{lstlisting}
 
@@ -344,6 +353,11 @@ xcb_change_window_attributes(conn, e.window, XCB_CW_EVENT_MASK, &window_event);
 
 \begin{lstlisting}[language=C++]
 xcb_grab_key(conn, 0, e.window,
+		XCB_MOD_MASK_1,  // Alt
+		cast(xcb_keycode_t)24,  //q
+		XCB_GRAB_MODE_ASYNC,
+		XCB_GRAB_MODE_ASYNC);
+xcb_grab_key(conn, 0, e.window,
 		XCB_MOD_MASK_1|XCB_MOD_MASK_2,  // Alt
 		cast(xcb_keycode_t)24,  //q
 		XCB_GRAB_MODE_ASYNC,
@@ -367,6 +381,9 @@ case XCB_KEY_PRESS:
 \end{lstlisting}
 
 つってもこれだけだ。これで当初の目標は達成したし、jokenwmは一応の完成を見たってわけだ。ここから先は、お前らがもっとクールなWMを作っていってくれよな。
+
+おっと、そういや完全に忘れていたんだが、このプログラムには一つ、重大な欠陥がある。それは\textbf{メモリの解放をやってねぇ}ってことだ。XCBの中ではヒープ領域を確保してそこに変数を割り当てるっつうことがよくあるんだが……、それは受け取った側で解放してやるのが作法ってもんだ。たとえGCのあるD言語でもそれは一緒だ。だが、今の小さなプログラムなら問題になることはねえし、むしろ本質から離れていると判断したからメモリを解放するコードは書いてねぇんだ。お前らが本気でWMを書くなら、もちろんこのコードも必要になってくるぜ。それじゃあな！
+
 
 \section{ふるつき}
 
@@ -448,7 +465,21 @@ void main()
 					XCB_GRAB_MODE_ASYNC,
 					e.window, XCB_NONE,
 					XCB_BUTTON_INDEX_1,  // LEFT BUTTON
+					XCB_MOD_MASK_1);
+			xcb_grab_button(conn, 1, e.window,
+					XCB_EVENT_MASK_BUTTON_PRESS|
+					XCB_EVENT_MASK_BUTTON_RELEASE|
+					XCB_EVENT_MASK_POINTER_MOTION,
+					XCB_GRAB_MODE_ASYNC,
+					XCB_GRAB_MODE_ASYNC,
+					e.window, XCB_NONE,
+					XCB_BUTTON_INDEX_1,  // LEFT BUTTON
 					XCB_MOD_MASK_1|XCB_MOD_MASK_2);
+			xcb_grab_key(conn, 0, root,
+					XCB_MOD_MASK_1,
+					cast(xcb_keycode_t)24,  //q
+					XCB_GRAB_MODE_ASYNC,
+					XCB_GRAB_MODE_ASYNC);
 			xcb_grab_key(conn, 0, root,
 					XCB_MOD_MASK_1|XCB_MOD_MASK_2,
 					cast(xcb_keycode_t)24,  //q
